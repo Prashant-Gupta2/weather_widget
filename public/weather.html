@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Document</title>
+          <style>
+            *{
+             font-family: 'Segoe UI';
+            }        
+           body{
+             display: flex;
+             justify-content: center;
+             align-items: center; 
+             height: 100vh;      
+           }
+           .weather-box h3{
+            text-align: center;
+            background-color: hwb(264 24% 16% / 0.877);
+            color: white;
+            padding: 4px;
+            border-radius: 4px;
+           }
+           .weather-box{
+              width: 100%;
+              background:linear-gradient(#64E8DE,#8A64EB); 
+              border: none;
+              box-shadow: 2px 2px 2px 2px gray;
+              border-radius: 10px;
+              padding: 7px;
+           }
+           @media(orientation: landscape){
+            .weather-box{
+              max-width: 320px;
+              padding: 20px;
+            }
+           }
+           .content-box{
+             display: flex;
+             justify-content:space-between;
+           }
+           .content-box img{
+             width: 60px;    
+           }
+           #value{
+            font-size: 26px;
+            font-weight: bold;
+            padding: 8px;
+            position: relative;
+           }
+           .info-box{
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-family: Tahoma;
+            font-weight:450;
+           }
+           input{
+            width: 97%;
+             padding: 5px;
+             font-size: 16px;
+             outline: none;
+             border: none;
+             border-radius: 50px;
+             background-color: rgb(235, 235, 243);
+             box-shadow: 2px 2px 2pc gray;
+           }
+           input::placeholder{
+            color:#8A64EB;
+            font-size: 16px;
+            padding-left: 4px;
+            text-align: center;     
+           }
+           .notFound{
+            text-align: center;
+             color: brown;
+            border-radius: 5px;       
+           }
+           #fellsLike{
+            color: brown;
+            font-weight: 400;
+            font-size: 15px;
+            font-weight: bold;
+            position: relative;
+           }
+           #lat::before{
+            content: "Latitude: ";
+            font-size: 14px;
+            font-weight: bold;
+            color: black;
+           }
+           #lon::before{
+            content: "Longitude: ";
+            font-size: 14px;
+            font-weight: bold;
+            color: black;
+           }
+           #lat, #lon{
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+           }
+           #value::after{
+            content: "o";
+            top:0;
+            position: absolute;
+            font-size: 20px;
+           }
+    
+           #fellsLike::before{
+            content: "Feels Like: ";
+            font-size: 14px;
+            font-weight: bold;
+            color: black;
+           }
+           #cityName{
+            font-size: 17px;
+            font-weight: bold;
+            color: white;
+            padding: 4px;
+           }
+           #max{
+            font-size: 13px;
+            font-weight: bold;
+            color:brown;
+            position: relative;
+           }
+           #max::before{
+            content: "Max_temp: ";
+            font-size: 14px;
+            font-weight: bold;
+            color: black;
+          
+           }
+          
+          </style>
+          <script>
+             function handleSearch(e){
+              let city=document.getElementById("txtcity").value;
+              let value=document.getElementById("value");
+              let cityName=document.getElementById("cityName");
+              let fellsLike=document.getElementById("fellsLike");
+              let max=document.getElementById("max");
+              let lat=document.getElementById("lat");
+              let lon=document.getElementById('lon');
+              let verifyCity;
+               fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=262c82c14aff53e7d38479969ccbb886&units=metric`)     
+               .then(response=>response.json())
+               .then(data=>{
+               console.log(data)
+               verifyCity=data.name;
+               if(data.name){
+                document.getElementById("show-box").style.display="block";
+                value.innerText=data.main.temp;
+                 fellsLike.innerText=data.main.feels_like;
+                 cityName.innerText=data.name;
+                 max.innerText=data.main.temp_max;
+                 lat.innerText=data.coord.lat;
+                 lon.innerText=data.coord.lon;
+                 document.getElementById("error").style.display="none"; 
+               }
+               else{
+                document.getElementById("show-box").style.display="none";                 
+               }  
+               })
+               .catch(error=>{
+                console.log(error.message);
+               })
+               if(!verifyCity){
+                  document.getElementById("error").innerText="city doesn't exist"
+                  verifyCity="";
+                }
+                else{
+                  document.getElementById("error").innerText=""; 
+                }
+             }       
+          </script>
+</head>
+<body>
+     <div class="weather-box">
+       <h3>Weather App</h3> 
+       <div>
+         <input type="text" id="txtcity" onkeyup="handleSearch(event)" placeholder="search city">
+         <div class="notFound" id="error"></div> 
+       </div>
+       <div id="show-box" style="display: none;">
+       <div class="content-box">
+        
+        <div>
+          <div id="value"></div>
+          <div id="cityName"></div>
+        </div>
+
+        <div>
+          <img src="#" alt="#">
+        </div>
+       </div> 
+       <div class="info-box">
+         <div>
+          <div id="lat"></div>
+          <div id="lon"></div>
+         </div>
+          <div>
+             <div id="fellsLike"></div> 
+             <div id="max"></div>      
+          </div>
+       </div> 
+     </div>   
+       </div>  
+</body>
+</html>
